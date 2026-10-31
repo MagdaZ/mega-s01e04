@@ -14,12 +14,12 @@ in a shell this agent can run.
 2. Draft the split as a table: title · plan section · scope · done when · blocked by.
    One issue per unit of work.
 3. **Stop and show the table to the human.** Publish nothing until they approve it.
-4. Ask the human what every issue here must carry (fields, labels, wording), unless it is
-   already written down in this session or in the repo.
+4. Every issue carries the shape in [What every issue carries](#what-every-issue-carries).
+   Ask the human only about anything the plan needs beyond it.
 5. Create each issue in dependency order, so blocked-by can cite real numbers:
 
    ```sh
-   gh issue create --title "<title>" --body-file <tmp.md>
+   gh issue create --title "<title>" --label "plan:<plan>" --body-file <tmp.md>
    ```
 
 6. Record every issue URL from gh's output (not from memory) and reply with the list.
@@ -29,6 +29,29 @@ Closing one, with the closing comment from AGENTS.md:
 ```sh
 gh issue close <n> -c "<closing comment>"
 ```
+
+## What every issue carries
+
+Approved by the human on the morning-digest plan (2026-10-31). The body, in this order:
+
+```
+Source: plan.md § <n>
+
+Scope: <what to change, which files>
+Done when: <the plan's check, word for word>
+Blocked by: <#n or —>
+Worker model: <strongest for logic, cheaper for views and tests>
+```
+
+- The first line is always `Source: plan.md § <n>`, and every issue has the label
+  `plan:<plan>` (the plan's `plan:` frontmatter, e.g. `plan:morning-digest`). The reviewer sorts
+  by those two.
+- A step that waits on someone outside the repo (a reviewer's look, a sign-off) says so in
+  `Blocked by` or `Done when`, and its issue stays open until they have acted. Sending a link is
+  not the same as it being reviewed.
+- A pushed `closes #n` (styleguide) shuts the issue on push, before its closing comment exists.
+  Workers on their own branch commit with `(#n)`; whoever merges closes the issue by hand with the
+  closing comment once its "Done when" holds on the default branch.
 
 ## No `gh`
 
