@@ -3,6 +3,8 @@ import { loadConfig, type RigConfig } from './config.js';
 import { readNight } from './digest/read.js';
 import { lane } from './lane.js';
 import { readStatus } from './status.js';
+import { readNight } from './digest/read.js';
+import { DigestPage } from './views/digest.js';
 import { Layout } from './views/layout.js';
 import { StatusBoard } from './views/status.js';
 
@@ -25,6 +27,18 @@ export function createApp(config: RigConfig = loadConfig()) {
       </Layout>,
     ),
   );
+
+  app.get('/digest/:night', (c) => {
+    const id = c.req.param('night');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(id)) return c.notFound();
+    const night = readNight(config.runsDir, id);
+    if (!night) return c.notFound();
+    return c.html(
+      <Layout title={`digest ${id}`} lane={lane()}>
+        <DigestPage night={night} />
+      </Layout>,
+    );
+  });
 
   return app;
 }
